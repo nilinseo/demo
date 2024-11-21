@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气信息</title>
+    <style>
+        /* 样式可根据需要修改 */
+        #weatherInfo {
+            border: none; /* 取消边框 */
+            max-width: 1000px;
+            margin: 25px auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            line-height: 30px;
+            font-size: 14px;
+            color: #1E7A11;
+            font-weight: 400;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            background-image: linear-gradient(90deg,#fdf3f3 0,#eee 42%,#ecf3fb 100%);
+            padding: 10px; /* 添加内边距 */
+            border-radius: 5px; /* 添加圆角 */
+        }
+
+        .icon {
+            display: inline-block; /* 改为 inline-block，确保与文本在同一行 */
+            background: url(https://www.3bbs.cn/template/x520_v2ex/qin_images/footer.svg) no-repeat center;
+            background-size: 20px; /* 确保图标大小合适 */
+            height: 20px; /* 设置合适的图标高度 */
+            width: 20px; /* 设置合适的图标宽度 */
+            margin-right: 8px; /* 图标与文字之间的间距 */
+            vertical-align: middle; /* 垂直对齐 */
+        }
+    </style>
+</head>
+<body>
+    <div id="weatherInfo">加载中...</div>
+
+    <script>
+        // 使用 fetch 获取天气信息
+        fetch("https://api.vvhan.com/api/weather")
+            .then(response => response.json())  // 将响应转换为 JSON
+            .then(data => {
+                if (data.success) {
+                    // 提取所需数据
+                    const city = data.city;
+                    const date = data.data.date;
+                    const week = data.data.week;
+                    const type = data.data.type;
+                    const low = data.data.low;
+                    const high = data.data.high;
+                    const fengxiang = data.data.fengxiang;
+                    const fengli = data.data.fengli;
+                    const tip = data.tip;
+
+                    // 格式化显示的信息，添加图标
+                    const weatherInfo = `
+                        <span class="icon"></span>
+                        你好，来自${city}的朋友，今天是${date} ${week}，天气${type}，低温${low}，高温${high}，
+                        ${fengxiang}，风力${fengli}，${tip}~  yeqi.net`;
+                    
+                    // 将信息插入到指定的 div 中，使用 innerHTML 支持 HTML 格式
+                    document.getElementById("weatherInfo").innerHTML = weatherInfo;
+                } else {
+                    document.getElementById("weatherInfo").textContent = "无法获取天气信息。";
+                }
+            })
+            .catch(error => {
+                console.error("获取天气信息失败：", error);
+                document.getElementById("weatherInfo").textContent = "获取天气信息失败，请稍后再试。";
+            });
+    </script>
+</body>
+</html>
